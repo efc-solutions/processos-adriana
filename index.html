@@ -243,6 +243,44 @@
   .empty-state, .state-msg { padding: 30px; text-align: center; color: var(--navy-soft); font-size: 13.5px; }
   .state-msg.error { color: var(--red); }
 
+  .alert-banner {
+    background: #FBEAE8;
+    border: 1px solid #F3C9C5;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #8C332B;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .alert-banner.show { display: flex; }
+  .alert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .alert-card {
+    background: #FBEAE8;
+    border: 1px solid #F3C9C5;
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .alert-card .proc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: #B0453B;
+    margin-bottom: 6px;
+  }
+  .alert-card .contrario { font-weight: 600; font-size: 14px; color: var(--navy); margin-bottom: 6px; }
+  .alert-card .mov { font-size: 12.5px; color: #8C332B; margin-top: 6px; line-height: 1.4; }
+  .alert-card .mov-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--navy-soft); margin-top: 4px; }
+  .alert-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red); margin-right: 5px;
+  }
+
   footer {
     color: var(--navy-soft);
     font-size: 12px;
@@ -274,12 +312,20 @@
   <div id="loadingState" class="state-msg">Carregando processos da planilha…</div>
 
   <div id="content" style="display:none">
+    <div class="alert-banner" id="alertBanner">🔔 <span id="alertBannerText"></span></div>
+
     <div class="kpis">
       <div class="kpi"><div class="num" id="kpiTotal">—</div><div class="label">Total de processos</div></div>
       <div class="kpi win"><div class="num" id="kpiWins">—</div><div class="label">Vitoriosos</div></div>
       <div class="kpi"><div class="num" id="kpiOngoing">—</div><div class="label">Em andamento</div></div>
       <div class="kpi win"><div class="num" id="kpiPct">—</div><div class="label">Taxa de vitória (encerrados)</div></div>
     </div>
+
+    <section id="alertSection" style="display:none">
+      <h2>🔔 Movimentações novas</h2>
+      <p class="section-sub" id="alertSub"></p>
+      <div class="alert-grid" id="alertGrid"></div>
+    </section>
 
     <section>
       <h2>Por instituição / campus</h2>
@@ -306,7 +352,7 @@
           <thead>
             <tr>
               <th>Processo</th><th>Instituição</th><th>Ação</th><th>Contrário</th>
-              <th>Valor da causa</th><th>Provisionado</th><th>Situação</th>
+              <th>Valor da causa</th><th>Provisionado</th><th>Situação</th><th></th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -378,10 +424,41 @@ function montarInterface() {
   document.getElementById('kpiPct').textContent = pct + '%';
   document.getElementById('winSub').textContent = wins.length + ' casos encerrados com resultado final favorável';
 
+  renderAlerts();
   renderInstBars();
   renderWinGrid(wins);
   renderChips();
   renderTable();
+}
+
+function renderAlerts() {
+  const alerts = DATA.filter(r => r.alerta === 'Sim');
+  const banner = document.getElementById('alertBanner');
+  const section = document.getElementById('alertSection');
+  const grid = document.getElementById('alertGrid');
+
+  if (alerts.length === 0) {
+    banner.classList.remove('show');
+    section.style.display = 'none';
+    return;
+  }
+
+  banner.classList.add('show');
+  document.getElementById('alertBannerText').textContent =
+    alerts.length + (alerts.length === 1 ? ' processo teve' : ' processos tiveram') + ' movimentação nova desde a última verificação.';
+
+  section.style.display = 'block';
+  document.getElementById('alertSub').textContent =
+    'Detectadas pela última consulta ao DataJud (CNJ) — verifique os detalhes no processo original';
+
+  grid.innerHTML = alerts.map(r => `
+    <div class="alert-card">
+      <div class="proc"><span class="alert-dot"></span>${r.p}</div>
+      <div class="contrario">${r.contrario || '—'}</div>
+      <div class="mov">${r.ultimaMovDescricao || 'Nova movimentação registrada'}</div>
+      <div class="mov-date">${r.ultimaMovData || ''}</div>
+    </div>
+  `).join('');
 }
 
 function renderInstBars() {
@@ -466,7 +543,7 @@ function renderTable() {
   });
 
   if (filtered.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="7" class="empty-state">Nenhum processo encontrado com esses filtros.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhum processo encontrado com esses filtros.</td></tr>`;
     return;
   }
 
@@ -479,6 +556,7 @@ function renderTable() {
       <td class="valor">${brl(r.valor)}</td>
       <td class="valor">${brl(r.prov)}</td>
       <td><span class="tag ${String(r.situacao).replace(' ','.')}" data-s="${r.situacao}">${r.situacao}</span></td>
+      <td>${r.alerta === 'Sim' ? '<span class="alert-dot" title="Movimentação nova"></span>' : ''}</td>
     </tr>
   `).join('');
 }
