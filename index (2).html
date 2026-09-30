@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Processos Jurídicos · Adriana</title>
+
+<!-- Ícone e comportamento de app ao adicionar à tela inicial -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="theme-color" content="#14233F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Processos">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F5FA;
+    --paper: #FFFFFF;
+    --navy: #14233F;
+    --navy-soft: #55668A;
+    --line: #E1E7F0;
+    --accent: #2A5C99;
+    --accent-soft: #E7EFFA;
+    --green: #2E7D5C;
+    --green-soft: #E3F3EA;
+    --gold: #A67C1F;
+    --gold-soft: #FBF1DC;
+    --red: #B0453B;
+    --red-soft: #FBEAE8;
+    --grey-soft: #EEF1F6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header.top { margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  header.top .title-row { display: flex; align-items: center; gap: 16px; }
+  header.top .logo {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(20,35,63,0.18);
+    flex-shrink: 0;
+  }
+  header.top .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    letter-spacing: .02em;
+    margin-bottom: 10px;
+  }
+  header.top h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(30px, 4.5vw, 44px);
+    margin: 0 0 8px;
+    line-height: 1.1;
+    color: var(--navy);
+  }
+  header.top p {
+    color: var(--navy-soft);
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  #updatedAt { font-size: 12px; color: var(--navy-soft); font-family: 'IBM Plex Mono', monospace; }
+  #refreshBtn {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  #refreshBtn:hover { background: #DAE7F7; }
+  #checkBtn {
+    margin-top: 8px;
+    margin-left: 6px;
+    font-size: 12px;
+    color: #8C332B;
+    background: var(--red-soft);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  #checkBtn:hover { background: #F6D6D3; }
+  #checkBtn:disabled { opacity: 0.55; cursor: default; }
+  #checkStatus { font-size: 11.5px; color: var(--navy-soft); margin-top: 6px; max-width: 220px; }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 32px 0 44px;
+  }
+  .kpi {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 20px;
+  }
+  .kpi .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1;
+    color: var(--navy);
+  }
+  .kpi.win .num { color: var(--green); }
+  .kpi .label {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--navy-soft);
+  }
+
+  section { margin-bottom: 44px; }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--navy);
+    margin: 0 0 4px;
+  }
+  .section-sub {
+    color: var(--navy-soft);
+    font-size: 13.5px;
+    margin: 0 0 18px;
+  }
+
+  .inst-bars { display: flex; flex-direction: column; gap: 10px; }
+  .inst-row { display: grid; grid-template-columns: 110px 1fr 60px; align-items: center; gap: 12px; }
+  .inst-name { font-size: 13px; font-weight: 500; color: var(--navy); }
+  .inst-track { background: var(--grey-soft); border-radius: 3px; height: 20px; overflow: hidden; display: flex; }
+  .inst-fill { background: var(--accent); height: 100%; }
+  .inst-fill.win-part { background: var(--green); }
+  .inst-count { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--navy-soft); text-align: right; }
+
+  .win-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .win-card {
+    background: var(--green-soft);
+    border: 1px solid #CDE9D8;
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .win-card .proc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .win-card .contrario {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .win-card .meta { font-size: 12.5px; color: var(--navy-soft); }
+  .win-card .result-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1B5E20;
+    background: #C9EBD3;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1 1 220px;
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13.5px;
+    background: var(--paper);
+    color: var(--navy);
+  }
+  .search-box:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .chip {
+    padding: 7px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--navy-soft);
+    font-size: 12.5px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .table-wrap {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 640px;
+    background: var(--paper);
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  thead th {
+    position: sticky; top: 0;
+    background: var(--navy);
+    color: #fff;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 500;
+    font-size: 11.5px;
+    z-index: 1;
+  }
+  tbody td {
+    padding: 9px 12px;
+    border-top: 1px solid var(--line);
+    color: var(--navy);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #FAFBFD; }
+  td.proc { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--navy-soft); white-space: nowrap; }
+  td.valor { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+  }
+  .tag.Vitorioso { background: var(--green-soft); color: #1B5E20; }
+  .tag.Perda { background: var(--red-soft); color: #8C332B; }
+  .tag.Acordo { background: var(--gold-soft); color: #7A5A0F; }
+  .tag.Parcial { background: var(--gold-soft); color: #7A5A0F; }
+  .tag[data-s="Em Andamento"] { background: var(--grey-soft); color: var(--navy-soft); }
+  .tag[data-s="Revisar"] { background: #FBEAE8; color: #8C332B; }
+
+  .empty-state, .state-msg { padding: 30px; text-align: center; color: var(--navy-soft); font-size: 13.5px; }
+  .state-msg.error { color: var(--red); }
+
+  .alert-banner {
+    background: #FBEAE8;
+    border: 1px solid #F3C9C5;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #8C332B;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .alert-banner.show { display: flex; }
+  .alert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .alert-card {
+    background: #FBEAE8;
+    border: 1px solid #F3C9C5;
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .alert-card .proc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: #B0453B;
+    margin-bottom: 6px;
+  }
+  .alert-card .contrario { font-weight: 600; font-size: 14px; color: var(--navy); margin-bottom: 6px; }
+  .alert-card .mov { font-size: 12.5px; color: #8C332B; margin-top: 6px; line-height: 1.4; }
+  .alert-card .mov-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--navy-soft); margin-top: 4px; }
+  .alert-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red); margin-right: 5px;
+  }
+
+  footer {
+    color: var(--navy-soft);
+    font-size: 12px;
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  /* ── Abas Processos / Atividades ───────────────────────────── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px;
+    width: fit-content;
+    margin: -12px 0 28px;
+  }
+  .tab {
+    border: none; background: transparent; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--navy-soft);
+    padding: 9px 20px; border-radius: 999px;
+  }
+  .tab.active { background: var(--navy); color: #fff; }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ── Atividades ────────────────────────────────────────────── */
+  .atv-layout { display: grid; grid-template-columns: 400px 1fr; gap: 28px; align-items: start; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 22px 24px;
+  }
+  .card h2 { margin-bottom: 14px; }
+  .form-card { position: sticky; top: 16px; }
+  .form-card.editing { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .field { margin-bottom: 14px; }
+  .field > label, .field-label {
+    display: block;
+    font-size: 12px; font-weight: 600; letter-spacing: .02em;
+    color: var(--navy-soft);
+    margin-bottom: 6px;
+  }
+  .field .opt { font-weight: 400; color: #8A97B0; }
+  .inp {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    background: #FBFCFE;
+    color: var(--navy);
+  }
+  .inp:focus { outline: 2px solid var(--accent); outline-offset: 0; background: #fff; }
+  select.inp { appearance: auto; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hint { font-size: 12px; color: var(--navy-soft); margin-top: 6px; line-height: 1.4; min-height: 0; }
+  .seg { display: flex; gap: 6px; flex-wrap: wrap; }
+  .seg button {
+    flex: 1 1 auto;
+    border: 1px solid var(--line); background: #FBFCFE; color: var(--navy-soft);
+    padding: 8px 10px; border-radius: 6px; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500;
+  }
+  .seg button.active { background: var(--accent-soft); color: var(--accent); border-color: #BCD2EE; }
+  .seg.small button { flex: 0 0 auto; padding: 6px 9px; font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
+  .hours-box { background: var(--grey-soft); border-radius: 6px; padding: 12px; margin-bottom: 14px; }
+  .hours-box .field { margin-bottom: 10px; }
+  .hours-box .field:last-of-type { margin-bottom: 6px; }
+  .hours-line { display: grid; grid-template-columns: 78px 1fr; gap: 8px; align-items: center; }
+  .hours-line .inp { padding: 8px 10px; font-size: 14px; text-align: center; font-family: 'IBM Plex Mono', monospace; }
+  .total-line { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--navy-soft); border-top: 1px dashed #CFD7E4; padding-top: 8px; }
+  .total-line strong { font-family: 'Fraunces', serif; font-size: 22px; color: var(--navy); }
+  details.more { margin: 4px 0 16px; }
+  details.more summary { cursor: pointer; font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px; }
+  .btn-primary {
+    width: 100%;
+    border: none; border-radius: 8px;
+    background: var(--navy); color: #fff;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; font-weight: 600;
+    padding: 13px; cursor: pointer;
+  }
+  .btn-primary:hover { background: #1F3358; }
+  .btn-primary:disabled { opacity: .6; cursor: default; }
+  .btn-link {
+    border: none; background: none; cursor: pointer; padding: 0;
+    color: var(--accent); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500;
+  }
+  .form-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 8px; flex-wrap: wrap; }
+  .absence { display: none; margin-top: 10px; gap: 6px; flex-wrap: wrap; }
+  .absence.show { display: flex; }
+  .absence button {
+    border: 1px solid #EAD9B0; background: var(--gold-soft); color: #7A5A0F;
+    padding: 7px 12px; border-radius: 20px; cursor: pointer; font-size: 12.5px; font-weight: 500;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+
+  .month-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .month-nav { display: flex; align-items: center; gap: 6px; }
+  .month-nav button {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--paper); color: var(--navy);
+    cursor: pointer; font-size: 15px;
+  }
+  .month-nav .month-label { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; min-width: 190px; text-align: center; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-soft {
+    border: 1px solid #BCD2EE; background: var(--accent-soft); color: var(--accent);
+    padding: 8px 14px; border-radius: 20px; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500;
+  }
+  .btn-soft:hover { background: #DAE7F7; }
+  .kpis.atv { margin: 0 0 28px; }
+  .kpi .num small { font-size: 16px; color: var(--navy-soft); font-weight: 500; margin-left: 2px; }
+  .bars2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .bar-list { display: flex; flex-direction: column; gap: 9px; }
+  .bar-item { display: grid; grid-template-columns: minmax(0, 1.3fr) 1fr 52px; gap: 10px; align-items: center; font-size: 12.5px; }
+  .bar-item .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--navy); }
+  .bar-item .tr { background: var(--grey-soft); border-radius: 3px; height: 12px; overflow: hidden; }
+  .bar-item .fl { background: var(--accent); height: 100%; border-radius: 3px; }
+  .bar-item .vl { font-family: 'IBM Plex Mono', monospace; color: var(--navy-soft); text-align: right; font-size: 12px; }
+  .day-group { margin-bottom: 18px; }
+  .day-head { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; color: var(--navy-soft); padding: 0 2px 6px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+  .day-head span:last-child { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+  .atv-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 9px 2px; border-bottom: 1px solid #F0F3F8; }
+  .atv-item .t { font-size: 14px; font-weight: 500; color: var(--navy); }
+  .atv-item .m { font-size: 12px; color: var(--navy-soft); margin-top: 2px; }
+  .atv-item .h { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--navy); text-align: right; }
+  .atv-item .ops { margin-top: 4px; display: flex; gap: 10px; justify-content: flex-end; }
+  .atv-item .ops button { border: none; background: none; cursor: pointer; font-size: 12px; color: var(--navy-soft); padding: 0; font-family: 'IBM Plex Sans', sans-serif; }
+  .atv-item .ops button:hover { color: var(--accent); }
+  .atv-item .ops button.del:hover { color: var(--red); }
+  .atv-item.absent .t { color: #7A5A0F; }
+  .cx { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 10px; margin-left: 6px; vertical-align: 1px; }
+  .cx.Baixa { background: var(--green-soft); color: #1B5E20; }
+  .cx.Média { background: var(--gold-soft); color: #7A5A0F; }
+  .cx.Alta { background: var(--red-soft); color: #8C332B; }
+  .pending { opacity: .55; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+    background: var(--navy); color: #fff; padding: 11px 18px; border-radius: 8px;
+    font-size: 14px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 20;
+    max-width: calc(100% - 32px);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--red); }
+
+  @media (max-width: 960px) {
+    .atv-layout { grid-template-columns: 1fr; }
+    .form-card { position: static; }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding: 24px 16px 70px; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .inst-row { grid-template-columns: 90px 1fr 44px; }
+    .bars2 { grid-template-columns: 1fr; }
+    .tabs { width: 100%; }
+    .tab { flex: 1; }
+    .month-nav .month-label { min-width: 150px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="title-row">
+      <img class="logo" src="icon-192.png" alt="Logo Adriana">
+      <div>
+        <div class="eyebrow">PAINEL JURÍDICO · IAE</div>
+        <h1 id="pageTitle">Processos de Adriana</h1>
+        <p id="pageSub">Visão consolidada dos processos acompanhados — provisionamento, prognóstico atual e resultado final de cada caso, direto da planilha.</p>
+      </div>
+    </div>
+    <div style="text-align:right" id="procHeaderActions">
+      <div id="updatedAt">carregando…</div>
+      <button id="refreshBtn" onclick="carregar()">Atualizar dados</button>
+      <button id="checkBtn" onclick="dispararVerificacao()">🔔 Verificar movimentações</button>
+      <div id="checkStatus"></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" id="tabProcessos" role="tab" onclick="mostrarAba('processos')">⚖️ Processos</button>
+    <button class="tab" id="tabAtividades" role="tab" onclick="mostrarAba('atividades')">⏱️ Atividades</button>
+  </nav>
+
+  <!-- ═══════════════ ATIVIDADES ═══════════════ -->
+  <div id="viewAtividades" style="display:none">
+    <div class="atv-layout">
+
+      <!-- Formulário -->
+      <div class="card form-card" id="formCard">
+        <h2 id="formTitle">Registrar atividade</h2>
+
+        <div class="row2">
+          <div class="field">
+            <label for="fData">Data</label>
+            <input class="inp" id="fData" type="date">
+          </div>
+          <div class="field">
+            <label for="fSla">SLA (dias)</label>
+            <input class="inp" id="fSla" type="number" min="0" step="1" value="1">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="fTipo">Tipo de atividade</label>
+          <select class="inp" id="fTipo" onchange="aoMudarTipo()"></select>
+          <input class="inp" id="fTipoOutro" type="text" placeholder="Dê um nome para a nova atividade" style="display:none;margin-top:8px">
+          <div class="hint" id="tipoHint"></div>
+        </div>
+
+        <div class="field">
+          <label for="fSolicitante">Solicitante</label>
+          <input class="inp" id="fSolicitante" type="text" list="listaSolicitantes" placeholder="Quem pediu (pessoa ou setor)" autocomplete="off">
+          <datalist id="listaSolicitantes"></datalist>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Complexidade</span>
+          <div class="seg" id="fComplexidade">
+            <button type="button" data-v="Baixa">Baixa</button>
+            <button type="button" data-v="Média">Média</button>
+            <button type="button" data-v="Alta">Alta</button>
+          </div>
+        </div>
+
+        <div class="hours-box">
+          <div class="field">
+            <span class="field-label">Tempo de preparação (h)</span>
+            <div class="hours-line">
+              <input class="inp" id="fPrep" type="number" min="0" step="0.25" inputmode="decimal" placeholder="0">
+              <div class="seg small" data-target="fPrep"></div>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">Tempo de execução (h)</span>
+            <div class="hours-line">
+              <input class="inp" id="fExec" type="number" min="0" step="0.25" inputmode="decimal" placeholder="0">
+              <div class="seg small" data-target="fExec"></div>
+            </div>
+          </div>
+          <div class="total-line"><span>Tempo total</span><strong id="fTotal">0h</strong></div>
+        </div>
+
+        <details class="more" id="moreBox">
+          <summary>Valor do contrato e observações</summary>
+          <div class="field">
+            <label for="fValor">Valor do contrato <span class="opt">(opcional)</span></label>
+            <input class="inp" id="fValor" type="number" min="0" step="0.01" inputmode="decimal" placeholder="R$">
+          </div>
+          <div class="field">
+            <label for="fObs">Observações <span class="opt">(opcional)</span></label>
+            <input class="inp" id="fObs" type="text" placeholder="Ex.: nº do processo, contrato, detalhe">
+          </div>
+        </details>
+
+        <button class="btn-primary" id="saveBtn" onclick="salvarAtividade()">Salvar atividade</button>
+
+        <div class="form-foot">
+          <button class="btn-link" id="absenceToggle" onclick="document.getElementById('absenceBox').classList.toggle('show')">Marcar dia sem expediente</button>
+          <button class="btn-link" id="cancelEdit" style="display:none;color:var(--navy-soft)" onclick="limparFormulario()">Cancelar edição</button>
+        </div>
+        <div class="absence" id="absenceBox">
+          <button onclick="registrarAusencia('Feriado')">Feriado</button>
+          <button onclick="registrarAusencia('Recesso')">Recesso</button>
+          <button onclick="registrarAusencia('Saída Jurídico')">Saída Jurídico</button>
+        </div>
+      </div>
+
+      <!-- Resumo do mês -->
+      <div>
+        <div class="month-bar">
+          <div class="month-nav">
+            <button onclick="mudarMes(-1)" aria-label="Mês anterior">‹</button>
+            <div class="month-label" id="monthLabel">—</div>
+            <button onclick="mudarMes(1)" aria-label="Próximo mês">›</button>
+          </div>
+          <div class="actions">
+            <button class="btn-soft" onclick="abrirRelatorio()">📄 Relatório do mês</button>
+            <button class="btn-soft" onclick="baixarExcel()">⬇ Excel</button>
+          </div>
+        </div>
+
+        <div id="atvLoading" class="state-msg">Carregando atividades…</div>
+        <div id="atvContent" style="display:none">
+          <div class="kpis atv">
+            <div class="kpi"><div class="num" id="aHoras">—</div><div class="label">Horas no mês</div></div>
+            <div class="kpi"><div class="num" id="aQtd">—</div><div class="label">Atividades no mês</div></div>
+            <div class="kpi"><div class="num" id="aHoje">—</div><div class="label" id="aHojeLabel">Horas hoje</div></div>
+            <div class="kpi"><div class="num" id="aMedia">—</div><div class="label">Média por dia trabalhado</div></div>
+          </div>
+
+          <div class="bars2">
+            <div class="card">
+              <h2 style="font-size:17px">Horas por tipo</h2>
+              <div class="bar-list" id="barTipo"></div>
+            </div>
+            <div class="card">
+              <h2 style="font-size:17px">Horas por solicitante</h2>
+              <div class="bar-list" id="barSolic"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 style="font-size:17px">Registros do mês</h2>
+            <div id="atvList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PROCESSOS ═══════════════ -->
+  <div id="viewProcessos">
+  <div id="loadingState" class="state-msg">Carregando processos da planilha…</div>
+
+  <div id="content" style="display:none">
+    <div class="alert-banner" id="alertBanner">🔔 <span id="alertBannerText"></span></div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="num" id="kpiTotal">—</div><div class="label">Total de processos</div></div>
+      <div class="kpi win"><div class="num" id="kpiWins">—</div><div class="label">Vitoriosos</div></div>
+      <div class="kpi"><div class="num" id="kpiOngoing">—</div><div class="label">Em andamento</div></div>
+      <div class="kpi win"><div class="num" id="kpiPct">—</div><div class="label">Taxa de vitória (encerrados)</div></div>
+    </div>
+
+    <section id="alertSection" style="display:none">
+      <h2>🔔 Movimentações novas</h2>
+      <p class="section-sub" id="alertSub"></p>
+      <div class="alert-grid" id="alertGrid"></div>
+    </section>
+
+    <section>
+      <h2>Por instituição / campus</h2>
+      <p class="section-sub">Quantidade de processos e proporção de vitórias em cada unidade</p>
+      <div class="inst-bars" id="instBars"></div>
+    </section>
+
+    <section>
+      <h2>Processos vitoriosos</h2>
+      <p class="section-sub" id="winSub"></p>
+      <div class="win-grid" id="winGrid"></div>
+    </section>
+
+    <section>
+      <h2>Todos os processos</h2>
+      <p class="section-sub">Busque por número, contrário ou ação — filtre por situação ou instituição</p>
+      <div class="controls">
+        <input class="search-box" id="search" type="text" placeholder="Buscar por processo, contrário ou ação…">
+      </div>
+      <div class="controls" id="statusChips"></div>
+      <div class="controls" id="instChips"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Processo</th><th>Instituição</th><th>Ação</th><th>Contrário</th>
+              <th>Valor da causa</th><th>Provisionado</th><th>Situação</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  </div><!-- /viewProcessos -->
+
+  <div class="toast" id="toast"></div>
+
+  <footer>Painel conectado à planilha do Google Sheets · processos da aba "Base Consolidada" e atividades da aba "Atividades"</footer>
+</div>
+
+<script>
+// ───────────────────────────────────────────────────────────────────────
+// COLE AQUI A URL DO SEU APPS SCRIPT (depois de implantar o Code.gs)
+// Extensões > Apps Script > Implantar > Nova implantação > App da Web
+// ───────────────────────────────────────────────────────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEsFlrv7Rrs5DYxaGC_X4mOWFRYH8SNLXbFyrVSq9FmjTU81uEQDt-Mw2GVLwrffTrZg/exec";
+
+let DATA = [];
+let INSTITUTIONS = [];
+let activeStatus = 'Todos';
+let activeInst = 'Todas';
+
+function brl(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+async function carregar() {
+  const loading = document.getElementById('loadingState');
+  const content = document.getElementById('content');
+  loading.style.display = 'block';
+  loading.className = 'state-msg';
+  loading.textContent = 'Carregando processos da planilha…';
+  content.style.display = 'none';
+
+  if (!SCRIPT_URL || SCRIPT_URL.indexOf('COLE_AQUI') !== -1) {
+    loading.className = 'state-msg error';
+    loading.textContent = 'Configure a URL do Apps Script no topo do arquivo (constante SCRIPT_URL) para carregar os dados.';
+    return;
+  }
+
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=processos');
+    const json = await resp.json();
+    DATA = Array.isArray(json) ? json : [];
+    INSTITUTIONS = [...new Set(DATA.map(r => r.inst))].sort();
+    document.getElementById('updatedAt').textContent = 'atualizado em ' + new Date().toLocaleString('pt-BR');
+    loading.style.display = 'none';
+    content.style.display = 'block';
+    montarInterface();
+  } catch (err) {
+    loading.className = 'state-msg error';
+    loading.textContent = 'Não foi possível carregar os dados da planilha. Verifique a URL do Apps Script e se ele foi implantado como "Qualquer pessoa".';
+    console.error(err);
+  }
+}
+
+function montarInterface() {
+  const total = DATA.length;
+  const wins = DATA.filter(r => r.situacao === 'Vitorioso');
+  const ongoing = DATA.filter(r => r.situacao === 'Em Andamento');
+  const closed = total - ongoing.length;
+  const pct = closed ? Math.round((wins.length / closed) * 1000) / 10 : 0;
+
+  document.getElementById('kpiTotal').textContent = total;
+  document.getElementById('kpiWins').textContent = wins.length;
+  document.getElementById('kpiOngoing').textContent = ongoing.length;
+  document.getElementById('kpiPct').textContent = pct + '%';
+  document.getElementById('winSub').textContent = wins.length + ' casos encerrados com resultado final favorável';
+
+  renderAlerts();
+  renderInstBars();
+  renderWinGrid(wins);
+  renderChips();
+  renderTable();
+}
+
+function renderAlerts() {
+  const alerts = DATA.filter(r => r.alerta === 'Sim');
+  const banner = document.getElementById('alertBanner');
+  const section = document.getElementById('alertSection');
+  const grid = document.getElementById('alertGrid');
+
+  if (alerts.length === 0) {
+    banner.classList.remove('show');
+    section.style.display = 'none';
+    return;
+  }
+
+  banner.classList.add('show');
+  document.getElementById('alertBannerText').textContent =
+    alerts.length + (alerts.length === 1 ? ' processo teve' : ' processos tiveram') + ' movimentação nova desde a última verificação.';
+
+  section.style.display = 'block';
+  document.getElementById('alertSub').textContent =
+    'Detectadas pela última consulta ao DataJud (CNJ) — verifique os detalhes no processo original';
+
+  grid.innerHTML = alerts.map(r => `
+    <div class="alert-card">
+      <div class="proc"><span class="alert-dot"></span>${r.p}</div>
+      <div class="contrario">${r.contrario || '—'}</div>
+      <div class="mov">${r.ultimaMovDescricao || 'Nova movimentação registrada'}</div>
+      <div class="mov-date">${r.ultimaMovData || ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderInstBars() {
+  const el = document.getElementById('instBars');
+  el.innerHTML = '';
+  const maxCount = Math.max(1, ...INSTITUTIONS.map(i => DATA.filter(r => r.inst === i).length));
+  INSTITUTIONS.forEach(inst => {
+    const rows = DATA.filter(r => r.inst === inst);
+    const wins = rows.filter(r => r.situacao === 'Vitorioso').length;
+    const pct = (rows.length / maxCount) * 100;
+    const winPct = rows.length ? (wins / rows.length) * 100 : 0;
+    const row = document.createElement('div');
+    row.className = 'inst-row';
+    row.innerHTML = `
+      <div class="inst-name">${inst}</div>
+      <div class="inst-track"><div class="inst-fill" style="width:${pct}%"><div class="inst-fill win-part" style="width:${winPct}%;height:100%"></div></div></div>
+      <div class="inst-count">${rows.length} · ${wins}🏆</div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function renderWinGrid(wins) {
+  const el = document.getElementById('winGrid');
+  el.innerHTML = '';
+  if (wins.length === 0) {
+    el.innerHTML = '<div class="empty-state">Nenhum processo com resultado final vitorioso identificado ainda.</div>';
+    return;
+  }
+  wins.sort((a, b) => (b.prov || b.valor || 0) - (a.prov || a.valor || 0));
+  wins.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'win-card';
+    card.innerHTML = `
+      <div class="proc">${r.p}</div>
+      <div class="contrario">${r.contrario || '—'}</div>
+      <div class="meta">${r.inst} · ${r.acao || 'Ação não informada'}</div>
+      <div class="meta">Valor da causa: ${brl(r.valor)}</div>
+      <span class="result-tag">${r.resultado}</span>
+    `;
+    el.appendChild(card);
+  });
+}
+
+function renderChips() {
+  const statusChipsEl = document.getElementById('statusChips');
+  const instChipsEl = document.getElementById('instChips');
+  statusChipsEl.innerHTML = '';
+  instChipsEl.innerHTML = '';
+
+  const STATUS_OPTIONS = ['Todos', 'Vitorioso', 'Em Andamento', 'Perda', 'Acordo', 'Parcial'];
+  STATUS_OPTIONS.forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (s === activeStatus ? ' active' : '');
+    chip.textContent = s === 'Todos' ? 'Todas as situações' : s;
+    chip.onclick = () => { activeStatus = s; renderChips(); renderTable(); };
+    statusChipsEl.appendChild(chip);
+  });
+
+  const instAll = document.createElement('div');
+  instAll.className = 'chip' + (activeInst === 'Todas' ? ' active' : '');
+  instAll.textContent = 'Todas as instituições';
+  instAll.onclick = () => { activeInst = 'Todas'; renderChips(); renderTable(); };
+  instChipsEl.appendChild(instAll);
+  INSTITUTIONS.forEach(inst => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (activeInst === inst ? ' active' : '');
+    chip.textContent = inst;
+    chip.onclick = () => { activeInst = inst; renderChips(); renderTable(); };
+    instChipsEl.appendChild(chip);
+  });
+}
+
+function renderTable() {
+  const tableBody = document.getElementById('tableBody');
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const filtered = DATA.filter(r => {
+    if (activeStatus !== 'Todos' && r.situacao !== activeStatus) return false;
+    if (activeInst !== 'Todas' && r.inst !== activeInst) return false;
+    if (q && !(r.p.toLowerCase().includes(q) || (r.contrario||'').toLowerCase().includes(q) || (r.acao||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhum processo encontrado com esses filtros.</td></tr>`;
+    return;
+  }
+
+  tableBody.innerHTML = filtered.map(r => `
+    <tr>
+      <td class="proc">${r.p}</td>
+      <td>${r.inst}</td>
+      <td>${r.acao || '—'}</td>
+      <td>${r.contrario || '—'}</td>
+      <td class="valor">${brl(r.valor)}</td>
+      <td class="valor">${brl(r.prov)}</td>
+      <td><span class="tag ${String(r.situacao).replace(' ','.')}" data-s="${r.situacao}">${r.situacao}</span></td>
+      <td>${r.alerta === 'Sim' ? '<span class="alert-dot" title="Movimentação nova"></span>' : ''}</td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('search').addEventListener('input', renderTable);
+
+// ─────────────────────────────────────────────────────────────────────────
+// Verificação de movimentações (DataJud) disparada pelo botão
+// ─────────────────────────────────────────────────────────────────────────
+let pollingInterval = null;
+
+async function dispararVerificacao() {
+  if (!SCRIPT_URL || SCRIPT_URL.indexOf('COLE_AQUI') !== -1) return;
+  const btn = document.getElementById('checkBtn');
+  const statusEl = document.getElementById('checkStatus');
+
+  btn.disabled = true;
+  statusEl.textContent = 'Iniciando…';
+
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=dispararAtualizacao');
+    const json = await resp.json();
+
+    if (json.status === 'ja_rodando') {
+      statusEl.textContent = 'Já tem uma verificação em andamento — acompanhando…';
+    } else if (json.status === 'iniciado') {
+      statusEl.textContent = 'Verificando processos no DataJud… (leva alguns minutos)';
+    } else {
+      statusEl.textContent = 'Não foi possível iniciar.';
+      btn.disabled = false;
+      return;
+    }
+
+    iniciarAcompanhamento();
+  } catch (err) {
+    statusEl.textContent = 'Erro ao iniciar a verificação.';
+    btn.disabled = false;
+    console.error(err);
+  }
+}
+
+function iniciarAcompanhamento() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(verificarStatus, 15000);
+  verificarStatus();
+}
+
+async function verificarStatus() {
+  const btn = document.getElementById('checkBtn');
+  const statusEl = document.getElementById('checkStatus');
+
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=status');
+    const json = await resp.json();
+
+    if (json.emAndamento) {
+      statusEl.textContent = 'Ainda verificando…';
+      return;
+    }
+
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+    btn.disabled = false;
+    statusEl.textContent = json.ultimoResultado
+      ? 'Concluído: ' + json.ultimoResultado
+      : 'Concluído.';
+
+    carregar(); // recarrega os dados com os alertas novos
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// ATIVIDADES — registro diário + relatório mensal
+// ═════════════════════════════════════════════════════════════════════════
+const RELATORIO_TITULO = 'Relatório de Atividades · Jurídico UNASP SP';
+const RELATORIO_RESPONSAVEL = 'Adriana';
+
+// Tipos da aba "Legenda" do modelo + os que aparecem na planilha de exemplo.
+// Pra incluir um tipo novo, é só acrescentar uma linha aqui.
+const TIPOS = [
+  { g: 'Consultivo', n: 'Consulta Rápida', d: 'Respostas imediatas via e-mail/WhatsApp sem pesquisa profunda.' },
+  { g: 'Consultivo', n: 'Atendimento de Consulta', d: '' },
+  { g: 'Consultivo', n: 'Parecer Jurídico', d: 'Análises formais que exigem fundamentação e pesquisa.' },
+  { g: 'Consultivo', n: 'Retorno de E-mails', d: '' },
+  { g: 'Consultivo', n: 'Reunião', d: 'Tempo real de participação e deslocamento.' },
+  { g: 'Consultivo', n: 'Palestra/Estudo', d: 'Tempo de criação de material (Preparação) + tempo de apresentação (Execução).' },
+  { g: 'Contratos', n: 'Análise de Contratos', d: 'Revisão de minutas e cláusulas de risco.' },
+  { g: 'Contratos', n: 'Confecção de Contrato', d: '' },
+  { g: 'Contratos', n: 'Envio de Contratos para Assinatura', d: '' },
+  { g: 'Contencioso', n: 'Confecção de Contestação Trabalhista', d: '' },
+  { g: 'Contencioso', n: 'Confecção de Defesa Cível', d: '' },
+  { g: 'Contencioso', n: 'Pedido de Documentos - Defesa Trabalhista', d: '' },
+  { g: 'Contencioso', n: 'Pedido de Documentos - Defesa Cível', d: '' },
+  { g: 'Contencioso', n: 'Audiência Trabalhista', d: '' },
+  { g: 'Contencioso', n: 'Audiência Cível', d: '' },
+  { g: 'Contencioso', n: 'Resposta ao MPT', d: '' },
+  { g: 'Outros', n: 'Regularização de Imóveis', d: 'Diligências e análises documentais de propriedades.' },
+  { g: 'Outros', n: 'Atendimento Engenharia - Projeto Modificativo', d: '' },
+  { g: 'Outros', n: 'Outro', d: '' }
+];
+const AUSENCIAS = ['Feriado', 'Recesso', 'Saída Jurídico'];
+const ATALHOS_HORAS = [0.25, 0.5, 1, 2, 3];
+
+let ATV = [];
+let atvCarregado = false;
+let mesAtual = (() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })();
+let editandoId = null;
+
+// ── utilidades ──────────────────────────────────────────────────────────
+function hojeISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function isoParaBR(iso) { const [y, m, d] = String(iso).split('-'); return d ? `${d}/${m}/${y}` : iso; }
+function fmtH(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  const n = Math.round(Number(v) * 100) / 100;
+  return n.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + 'h';
+}
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function ehAusencia(r) { return AUSENCIAS.includes(r.tipo); }
+function totalDe(r) { return r.total != null ? Number(r.total) : (Number(r.prep || 0) + Number(r.exec || 0)); }
+function mesChave(y, m) { return y + '-' + String(m + 1).padStart(2, '0'); }
+function nomeMes(y, m) { const t = new Date(y, m, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }); return t.charAt(0).toUpperCase() + t.slice(1); }
+function doMes() { const k = mesChave(mesAtual.y, mesAtual.m); return ATV.filter(r => String(r.data).startsWith(k)); }
+
+function toast(msg, erro) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (erro ? ' err' : '');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.className = 'toast', 2600);
+}
+
+// ── troca de aba ────────────────────────────────────────────────────────
+function mostrarAba(qual) {
+  const atv = qual === 'atividades';
+  document.getElementById('viewAtividades').style.display = atv ? 'block' : 'none';
+  document.getElementById('viewProcessos').style.display = atv ? 'none' : 'block';
+  document.getElementById('procHeaderActions').style.display = atv ? 'none' : 'block';
+  document.getElementById('tabAtividades').classList.toggle('active', atv);
+  document.getElementById('tabProcessos').classList.toggle('active', !atv);
+  document.getElementById('pageTitle').textContent = atv ? 'Atividades de Adriana' : 'Processos de Adriana';
+  document.getElementById('pageSub').textContent = atv
+    ? 'Registro diário das atividades do jurídico — tempo, solicitante e complexidade — com relatório mensal pronto para enviar.'
+    : 'Visão consolidada dos processos acompanhados — provisionamento, prognóstico atual e resultado final de cada caso, direto da planilha.';
+  history.replaceState(null, '', atv ? '#atividades' : '#processos');
+  try { localStorage.setItem('abaPainel', qual); } catch (e) {}
+  if (atv && !atvCarregado) carregarAtividades();
+}
+
+// ── formulário ──────────────────────────────────────────────────────────
+// normaliza pra comparar nomes (ignora acento, maiúscula e espaços extras)
+function chaveTipo(s) {
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+// tipos criados por ela via "Outro" — lidos dos registros salvos na planilha
+function tiposPersonalizados() {
+  const padrao = new Set(TIPOS.map(t => chaveTipo(t.n)).concat(AUSENCIAS.map(chaveTipo)));
+  const mapa = new Map();
+  ATV.forEach(r => {
+    const k = chaveTipo(r.tipo);
+    if (!k || padrao.has(k) || mapa.has(k)) return;
+    mapa.set(k, String(r.tipo).trim());
+  });
+  return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function montarSelectTipo() {
+  const sel = document.getElementById('fTipo');
+  const atual = sel.value;
+  const grupos = [...new Set(TIPOS.map(t => t.g))];
+  const meus = tiposPersonalizados();
+  const opt = n => `<option>${esc(n)}</option>`;
+  sel.innerHTML = '<option value="">Selecione…</option>' + grupos.map(g => {
+    let bloco = '';
+    // "Meus tipos" entra logo antes do grupo "Outros", pra "Outro" continuar sendo a última opção
+    if (g === 'Outros' && meus.length) bloco += `<optgroup label="Meus tipos">${meus.map(opt).join('')}</optgroup>`;
+    return bloco + `<optgroup label="${g}">` + TIPOS.filter(t => t.g === g).map(t => opt(t.n)).join('') + '</optgroup>';
+  }).join('');
+  if (atual && [...sel.options].some(o => o.value === atual)) sel.value = atual;
+}
+
+function montarFormulario() {
+  montarSelectTipo();
+
+  document.querySelectorAll('.seg.small').forEach(box => {
+    const alvo = document.getElementById(box.dataset.target);
+    box.innerHTML = ATALHOS_HORAS.map(h => `<button type="button" data-h="${h}">${String(h).replace('.', ',')}</button>`).join('');
+    box.querySelectorAll('button').forEach(b => b.onclick = () => {
+      alvo.value = b.dataset.h;
+      atualizarTotal();
+    });
+    alvo.addEventListener('input', atualizarTotal);
+  });
+
+  document.querySelectorAll('#fComplexidade button').forEach(b => b.onclick = () => {
+    const jaAtivo = b.classList.contains('active');
+    document.querySelectorAll('#fComplexidade button').forEach(x => x.classList.remove('active'));
+    if (!jaAtivo) b.classList.add('active');
+  });
+
+  document.getElementById('fData').value = hojeISO();
+}
+
+function aoMudarTipo() {
+  const v = document.getElementById('fTipo').value;
+  const t = TIPOS.find(x => x.n === v);
+  document.getElementById('tipoHint').textContent = v === 'Outro'
+    ? 'Depois de salvar, esse nome passa a aparecer na lista em "Meus tipos".'
+    : (t && t.d ? t.d : '');
+  const outro = document.getElementById('fTipoOutro');
+  outro.style.display = v === 'Outro' ? 'block' : 'none';
+  if (v === 'Outro') outro.focus();
+  if (/contrato/i.test(v)) document.getElementById('moreBox').open = true;
+}
+
+function atualizarTotal() {
+  const p = Number(document.getElementById('fPrep').value || 0);
+  const e = Number(document.getElementById('fExec').value || 0);
+  document.getElementById('fTotal').textContent = fmtH(p + e);
+  ['fPrep', 'fExec'].forEach(id => {
+    const val = document.getElementById(id).value;
+    document.querySelectorAll(`.seg.small[data-target="${id}"] button`).forEach(b =>
+      b.classList.toggle('active', val !== '' && Number(b.dataset.h) === Number(val)));
+  });
+}
+
+function complexidadeSel() {
+  const b = document.querySelector('#fComplexidade button.active');
+  return b ? b.dataset.v : '';
+}
+
+function lerFormulario() {
+  let tipo = document.getElementById('fTipo').value;
+  if (tipo === 'Outro') {
+    const digitado = document.getElementById('fTipoOutro').value.trim().replace(/\s+/g, ' ');
+    // se já existe um tipo com esse nome (mesmo com acento/maiúscula diferente), usa o que já existe
+    const existente = TIPOS.map(t => t.n).concat(tiposPersonalizados()).find(n => chaveTipo(n) === chaveTipo(digitado));
+    tipo = digitado ? (existente || digitado) : '';
+  }
+  return {
+    action: 'salvarAtividade',
+    id: editandoId,
+    data: document.getElementById('fData').value || hojeISO(),
+    solicitante: document.getElementById('fSolicitante').value.trim(),
+    tipo,
+    complexidade: complexidadeSel(),
+    prep: document.getElementById('fPrep').value,
+    exec: document.getElementById('fExec').value,
+    valorContrato: document.getElementById('fValor').value,
+    sla: document.getElementById('fSla').value,
+    obs: document.getElementById('fObs').value.trim()
+  };
+}
+
+function limparFormulario(manterData) {
+  const data = document.getElementById('fData').value;
+  ['fSolicitante', 'fPrep', 'fExec', 'fValor', 'fObs', 'fTipoOutro'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fTipo').value = '';
+  document.getElementById('fSla').value = 1;
+  document.getElementById('fData').value = manterData ? data : hojeISO();
+  document.querySelectorAll('#fComplexidade button').forEach(x => x.classList.remove('active'));
+  aoMudarTipo();
+  atualizarTotal();
+  editandoId = null;
+  document.getElementById('formCard').classList.remove('editing');
+  document.getElementById('formTitle').textContent = 'Registrar atividade';
+  document.getElementById('saveBtn').textContent = 'Salvar atividade';
+  document.getElementById('cancelEdit').style.display = 'none';
+}
+
+function editarAtividade(id) {
+  const r = ATV.find(x => String(x.id) === String(id));
+  if (!r) return;
+  limparFormulario();
+  editandoId = r.id;
+  document.getElementById('fData').value = r.data;
+  montarSelectTipo();
+  const conhecido = [...document.getElementById('fTipo').options].some(o => o.value === r.tipo);
+  document.getElementById('fTipo').value = conhecido ? r.tipo : 'Outro';
+  aoMudarTipo();
+  if (!conhecido) document.getElementById('fTipoOutro').value = r.tipo;
+  document.getElementById('fSolicitante').value = r.solicitante || '';
+  document.querySelectorAll('#fComplexidade button').forEach(b => b.classList.toggle('active', b.dataset.v === r.complexidade));
+  document.getElementById('fPrep').value = r.prep ?? '';
+  document.getElementById('fExec').value = r.exec ?? '';
+  document.getElementById('fValor').value = r.valorContrato ?? '';
+  document.getElementById('fSla').value = r.sla ?? 1;
+  document.getElementById('fObs').value = r.obs || '';
+  if (r.valorContrato || r.obs) document.getElementById('moreBox').open = true;
+  atualizarTotal();
+  document.getElementById('formCard').classList.add('editing');
+  document.getElementById('formTitle').textContent = 'Editar atividade #' + r.id;
+  document.getElementById('saveBtn').textContent = 'Salvar alterações';
+  document.getElementById('cancelEdit').style.display = 'inline';
+  document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── gravação (POST no-cors + releitura pra confirmar) ───────────────────
+async function enviar(payload) {
+  await fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+}
+
+async function salvarAtividade() {
+  const d = lerFormulario();
+  if (!d.tipo) {
+    const ehOutro = document.getElementById('fTipo').value === 'Outro';
+    toast(ehOutro ? 'Dê um nome para a atividade' : 'Escolha o tipo de atividade', true);
+    document.getElementById(ehOutro ? 'fTipoOutro' : 'fTipo').focus();
+    return;
+  }
+  if (d.prep === '' && d.exec === '') { toast('Informe o tempo gasto', true); document.getElementById('fExec').focus(); return; }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Salvando…';
+
+  // mostra na hora (otimista); a releitura da planilha confirma depois
+  const local = { ...d, id: d.id ?? ('tmp' + Date.now()), _pend: true,
+    prep: d.prep === '' ? null : Number(d.prep), exec: d.exec === '' ? null : Number(d.exec),
+    valorContrato: d.valorContrato === '' ? null : Number(d.valorContrato), sla: d.sla === '' ? null : Number(d.sla) };
+  local.total = Number(local.prep || 0) + Number(local.exec || 0);
+  if (d.id != null) ATV = ATV.map(r => String(r.id) === String(d.id) ? local : r);
+  else ATV.push(local);
+  irParaMesDa(d.data);
+  renderAtividades();
+
+  try {
+    await enviar(d);
+    toast(d.id != null ? 'Atividade atualizada ✓' : 'Atividade registrada ✓');
+    limparFormulario(true);
+    setTimeout(() => carregarAtividades(true), 1500);
+  } catch (err) {
+    console.error(err);
+    toast('Não consegui salvar — confira a internet e tente de novo', true);
+    ATV = ATV.filter(r => r !== local);
+    renderAtividades();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = editandoId != null ? 'Salvar alterações' : 'Salvar atividade';
+  }
+}
+
+async function registrarAusencia(tipo) {
+  const data = document.getElementById('fData').value || hojeISO();
+  if (!confirm(`Marcar ${isoParaBR(data)} como "${tipo}"?`)) return;
+  const d = { action: 'salvarAtividade', data, tipo, solicitante: '', complexidade: '', prep: '', exec: '', valorContrato: '', sla: '', obs: '' };
+  ATV.push({ ...d, id: 'tmp' + Date.now(), _pend: true, total: null });
+  irParaMesDa(data);
+  renderAtividades();
+  document.getElementById('absenceBox').classList.remove('show');
+  try {
+    await enviar(d);
+    toast(tipo + ' registrado ✓');
+    setTimeout(() => carregarAtividades(true), 1500);
+  } catch (err) {
+    toast('Não consegui salvar — tente de novo', true);
+  }
+}
+
+async function excluirAtividade(id) {
+  const r = ATV.find(x => String(x.id) === String(id));
+  if (!r || !confirm(`Excluir "${r.tipo}" de ${isoParaBR(r.data)}?`)) return;
+  ATV = ATV.filter(x => x !== r);
+  renderAtividades();
+  try {
+    await enviar({ action: 'excluirAtividade', id });
+    toast('Atividade excluída');
+    setTimeout(() => carregarAtividades(true), 1500);
+  } catch (err) {
+    toast('Não consegui excluir — tente de novo', true);
+    carregarAtividades(true);
+  }
+}
+
+// ── leitura ─────────────────────────────────────────────────────────────
+async function carregarAtividades(silencioso) {
+  const loading = document.getElementById('atvLoading');
+  if (!silencioso) { loading.style.display = 'block'; loading.className = 'state-msg'; loading.textContent = 'Carregando atividades…'; }
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=atividades');
+    const json = await resp.json();
+    if (!Array.isArray(json)) throw new Error(json && json.mensagem || 'resposta inesperada');
+    ATV = json;
+    atvCarregado = true;
+    loading.style.display = 'none';
+    document.getElementById('atvContent').style.display = 'block';
+    renderAtividades();
+  } catch (err) {
+    console.error(err);
+    if (!silencioso) {
+      loading.className = 'state-msg error';
+      loading.textContent = 'Não foi possível carregar as atividades. Confira se o Apps Script foi reimplantado com a versão nova (ação "atividades").';
+    }
+  }
+}
+
+function irParaMesDa(iso) {
+  const [y, m] = String(iso).split('-').map(Number);
+  if (y && m) mesAtual = { y, m: m - 1 };
+}
+function mudarMes(delta) {
+  const d = new Date(mesAtual.y, mesAtual.m + delta, 1);
+  mesAtual = { y: d.getFullYear(), m: d.getMonth() };
+  renderAtividades();
+}
+
+// ── resumo do mês ───────────────────────────────────────────────────────
+function agrupar(lista, chave) {
+  const mapa = {};
+  lista.forEach(r => { const k = r[chave] || '(não informado)'; mapa[k] = (mapa[k] || 0) + totalDe(r); });
+  return Object.entries(mapa).sort((a, b) => b[1] - a[1]);
+}
+
+function renderBarras(el, pares) {
+  if (!pares.length) { el.innerHTML = '<div class="hint">Sem registros neste mês.</div>'; return; }
+  const max = Math.max(...pares.map(p => p[1]), 0.01);
+  el.innerHTML = pares.slice(0, 8).map(([n, v]) => `
+    <div class="bar-item" title="${esc(n)}: ${fmtH(v)}">
+      <div class="nm">${esc(n)}</div>
+      <div class="tr"><div class="fl" style="width:${(v / max) * 100}%"></div></div>
+      <div class="vl">${fmtH(v)}</div>
+    </div>`).join('') + (pares.length > 8 ? `<div class="hint">+ ${pares.length - 8} outros no relatório</div>` : '');
+}
+
+function renderAtividades() {
+  document.getElementById('monthLabel').textContent = nomeMes(mesAtual.y, mesAtual.m);
+  montarSelectTipo();
+
+  // sugestões de solicitante (todos os meses)
+  const solics = [...new Set(ATV.map(r => r.solicitante).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  document.getElementById('listaSolicitantes').innerHTML = solics.map(s => `<option value="${esc(s)}">`).join('');
+
+  const mes = doMes();
+  const trabalho = mes.filter(r => !ehAusencia(r));
+  const horas = trabalho.reduce((s, r) => s + totalDe(r), 0);
+  const dias = new Set(trabalho.map(r => r.data)).size;
+  const hoje = hojeISO();
+  const ehMesCorrente = mesChave(mesAtual.y, mesAtual.m) === hoje.slice(0, 7);
+  const horasHoje = ATV.filter(r => r.data === hoje && !ehAusencia(r)).reduce((s, r) => s + totalDe(r), 0);
+
+  document.getElementById('aHoras').textContent = fmtH(horas);
+  document.getElementById('aQtd').textContent = trabalho.length;
+  document.getElementById('aHoje').textContent = ehMesCorrente ? fmtH(horasHoje) : dias;
+  document.getElementById('aHojeLabel').textContent = ehMesCorrente ? 'Horas hoje' : 'Dias com atividade';
+  document.getElementById('aMedia').textContent = dias ? fmtH(horas / dias) : '—';
+
+  renderBarras(document.getElementById('barTipo'), agrupar(trabalho, 'tipo'));
+  renderBarras(document.getElementById('barSolic'), agrupar(trabalho, 'solicitante'));
+
+  // lista agrupada por dia (mais recente primeiro)
+  const el = document.getElementById('atvList');
+  if (!mes.length) { el.innerHTML = '<div class="empty-state">Nenhuma atividade registrada neste mês ainda.</div>'; return; }
+  const porDia = {};
+  mes.forEach(r => (porDia[r.data] = porDia[r.data] || []).push(r));
+  el.innerHTML = Object.keys(porDia).sort().reverse().map(dia => {
+    const itens = porDia[dia];
+    const hDia = itens.filter(r => !ehAusencia(r)).reduce((s, r) => s + totalDe(r), 0);
+    const [y, m, d] = dia.split('-').map(Number);
+    const rot = new Date(y, m - 1, d).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+    return `<div class="day-group">
+      <div class="day-head"><span>${rot.charAt(0).toUpperCase() + rot.slice(1)}</span><span>${hDia ? fmtH(hDia) : ''}</span></div>
+      ${itens.map(r => ehAusencia(r) ? `
+        <div class="atv-item absent ${r._pend ? 'pending' : ''}">
+          <div><div class="t">🗓️ ${esc(r.tipo)}</div></div>
+          <div class="ops">${r._pend ? '' : `<button class="del" onclick="excluirAtividade('${r.id}')">excluir</button>`}</div>
+        </div>` : `
+        <div class="atv-item ${r._pend ? 'pending' : ''}">
+          <div>
+            <div class="t">${esc(r.tipo)}${r.complexidade ? `<span class="cx ${esc(r.complexidade)}">${esc(r.complexidade)}</span>` : ''}</div>
+            <div class="m">${[r.solicitante && esc(r.solicitante),
+              (r.prep || r.exec) ? `prep. ${fmtH(r.prep || 0)} · exec. ${fmtH(r.exec || 0)}` : '',
+              r.valorContrato ? brl(Number(r.valorContrato)) : '',
+              r.obs && esc(r.obs)].filter(Boolean).join(' · ')}</div>
+          </div>
+          <div>
+            <div class="h">${fmtH(totalDe(r))}</div>
+            <div class="ops">${r._pend ? '<span class="hint">salvando…</span>' : `
+              <button onclick="editarAtividade('${r.id}')">editar</button>
+              <button class="del" onclick="excluirAtividade('${r.id}')">excluir</button>`}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ── relatório (imprimir / PDF) e Excel ──────────────────────────────────
+function linhasOrdenadas() {
+  return doMes().filter(r => !r._pend).sort((a, b) => a.data.localeCompare(b.data) || (Number(a.id) - Number(b.id)));
+}
+
+function abrirRelatorio() {
+  const lista = linhasOrdenadas();
+  if (!lista.length) { toast('Não há atividades neste mês', true); return; }
+  const trabalho = lista.filter(r => !ehAusencia(r));
+  const soma = k => trabalho.reduce((s, r) => s + Number(r[k] || 0), 0);
+  const tot = trabalho.reduce((s, r) => s + totalDe(r), 0);
+  const dias = new Set(trabalho.map(r => r.data)).size;
+  const porTipo = {};
+  trabalho.forEach(r => { const t = porTipo[r.tipo] = porTipo[r.tipo] || { q: 0, h: 0 }; t.q++; t.h += totalDe(r); });
+  const periodo = nomeMes(mesAtual.y, mesAtual.m);
+  const n = v => (v === null || v === undefined || v === '') ? '' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<title>${RELATORIO_TITULO} — ${periodo}</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 landscape; margin: 14mm; }
+  body { font-family: 'IBM Plex Sans', sans-serif; color: #14233F; margin: 0; padding: 28px; background: #fff; }
+  .bar { display: flex; gap: 8px; margin-bottom: 22px; }
+  .bar button { border: none; border-radius: 6px; padding: 9px 16px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  .bar .p { background: #14233F; color: #fff; } .bar .s { background: #EEF1F6; color: #14233F; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2A5C99; letter-spacing: .04em; }
+  h1 { font-family: 'Fraunces', serif; font-size: 26px; margin: 6px 0 4px; }
+  .sub { color: #55668A; font-size: 13px; margin-bottom: 20px; }
+  .kp { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .kp div { border: 1px solid #E1E7F0; border-radius: 6px; padding: 10px 16px; min-width: 130px; }
+  .kp b { display: block; font-family: 'Fraunces', serif; font-size: 22px; }
+  .kp span { font-size: 11.5px; color: #55668A; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: #55668A; margin: 22px 0 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+  th { background: #E7EFFA; color: #14233F; text-align: left; padding: 7px 8px; font-weight: 600; border-bottom: 1px solid #C9D6EA; }
+  td { padding: 6px 8px; border-bottom: 1px solid #EEF1F6; vertical-align: top; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.aus td { color: #7A5A0F; background: #FBF1DC; font-weight: 500; }
+  tfoot td { font-weight: 600; border-top: 2px solid #14233F; }
+  .resumo { width: auto; min-width: 420px; }
+  footer { margin-top: 26px; font-size: 10.5px; color: #8A97B0; }
+  @media print { .bar { display: none; } body { padding: 0; } }
+</style></head><body>
+<div class="bar"><button class="p" onclick="print()">Imprimir / salvar PDF</button><button class="s" onclick="close()">Fechar</button></div>
+<div class="eyebrow">${RELATORIO_TITULO.toUpperCase()}</div>
+<h1>Relatório de atividades — ${periodo}</h1>
+<div class="sub">Responsável: ${RELATORIO_RESPONSAVEL} · emitido em ${new Date().toLocaleDateString('pt-BR')}</div>
+<div class="kp">
+  <div><b>${trabalho.length}</b><span>atividades</span></div>
+  <div><b>${n(tot)}h</b><span>tempo total</span></div>
+  <div><b>${n(soma('prep'))}h</b><span>preparação</span></div>
+  <div><b>${n(soma('exec'))}h</b><span>execução</span></div>
+  <div><b>${dias}</b><span>dias com atividade</span></div>
+</div>
+<h2>Resumo por tipo de atividade</h2>
+<table class="resumo"><thead><tr><th>Tipo de atividade</th><th class="n">Qtde</th><th class="n">Horas</th></tr></thead><tbody>
+${Object.entries(porTipo).sort((a, b) => b[1].h - a[1].h).map(([t, v]) => `<tr><td>${esc(t)}</td><td class="n">${v.q}</td><td class="n">${n(v.h)}</td></tr>`).join('')}
+</tbody></table>
+<h2>Detalhamento</h2>
+<table><thead><tr>
+  <th>ID</th><th>Data Solicitação</th><th>Solicitante</th><th>Tipo de Atividade</th><th>Complexidade</th>
+  <th class="n">Tempo Preparação (h)</th><th class="n">Tempo Execução (h)</th><th class="n">Valor do Contrato</th><th class="n">SLA (dias)</th><th class="n">Tempo Total (h)</th>
+</tr></thead><tbody>
+${lista.map((r, i) => ehAusencia(r)
+  ? `<tr class="aus"><td>${i + 1}</td><td>${isoParaBR(r.data)}</td><td colspan="8">${esc(r.tipo).toUpperCase()}</td></tr>`
+  : `<tr><td>${i + 1}</td><td>${isoParaBR(r.data)}</td><td>${esc(r.solicitante)}</td><td>${esc(r.tipo)}${r.obs ? `<br><span style="color:#55668A">${esc(r.obs)}</span>` : ''}</td><td>${esc(r.complexidade)}</td>
+     <td class="n">${n(r.prep)}</td><td class="n">${n(r.exec)}</td><td class="n">${r.valorContrato ? brl(Number(r.valorContrato)) : ''}</td><td class="n">${n(r.sla)}</td><td class="n">${n(totalDe(r))}</td></tr>`).join('')}
+</tbody><tfoot><tr><td colspan="5">Total do mês</td><td class="n">${n(soma('prep'))}</td><td class="n">${n(soma('exec'))}</td><td></td><td></td><td class="n">${n(tot)}</td></tr></tfoot></table>
+<footer>Gerado a partir da planilha de atividades · ${RELATORIO_RESPONSAVEL}</footer>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  if (!w) { toast('Permita pop-ups para abrir o relatório', true); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+function baixarExcel() {
+  const lista = linhasOrdenadas();
+  if (!lista.length) { toast('Não há atividades neste mês', true); return; }
+  const num = v => (v === null || v === undefined || v === '') ? '' : String(Math.round(Number(v) * 100) / 100).replace('.', ',');
+  const cel = v => { const s = String(v ?? ''); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const cab = ['ID', 'Data Solicitação', 'Solicitante', 'Tipo de Atividade', 'Complexidade', 'Tempo Preparação (h)', 'Tempo Execução (h)', 'Valor do Contrato', 'SLA (dias)', 'Tempo Total (h)', 'Observações'];
+  const linhas = lista.map((r, i) => ehAusencia(r)
+    ? [i + 1, isoParaBR(r.data), '', '', '', '', '', r.tipo.toUpperCase(), r.tipo.toUpperCase(), r.tipo.toUpperCase(), '']
+    : [i + 1, isoParaBR(r.data), r.solicitante, r.tipo, r.complexidade, num(r.prep), num(r.exec), num(r.valorContrato), num(r.sla), num(totalDe(r)), r.obs]);
+  const csv = '﻿' + [cab, ...linhas].map(l => l.map(cel).join(';')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Relatorio_Atividades_Juridico_${mesChave(mesAtual.y, mesAtual.m)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+// ── inicialização ───────────────────────────────────────────────────────
+montarFormulario();
+carregar();
+(function () {
+  let aba = location.hash === '#atividades' ? 'atividades' : location.hash === '#processos' ? 'processos' : null;
+  if (!aba) { try { aba = localStorage.getItem('abaPainel'); } catch (e) {} }
+  mostrarAba(aba === 'atividades' ? 'atividades' : 'processos');
+})();
+</script>
+</body>
+</html>
